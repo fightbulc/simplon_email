@@ -1,0 +1,30 @@
+{
+    "name": "simplon/email",
+    "description": "Email building library which utilises swiftmailer",
+    "homepage": "https://github.com/fightbulc/simplon_email",
+    "version": "0.0.1",
+    "type": "library",
+    "keywords": ["email", "building", "templates", "mailer"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Tino Ehrich",
+            "email": "opensource@efides.com",
+            "role": "developer"
+        }
+    ],
+
+    "minimum-stability": "dev",
+
+    "require": {
+        "php": ">=5.4",
+        "swiftmailer/swiftmailer": "5.0.*",
+        "simplon/helper": "0.6.*"
+    },
+
+    "autoload": {
+        "psr-0": {
+            "Simplon\\Email": "src/"
+        }
+    }
+}

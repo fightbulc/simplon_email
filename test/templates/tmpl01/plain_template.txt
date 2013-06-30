@@ -1,0 +1,19 @@
+HEADER
+
+#################################################
+
+A _template is the basis to all _content files.
+Content will replace the following placeholder:
+
+{{content}}
+
+#################################################
+
+FOOTER
+
+-------------------------------------------------
+
+A template can also hold all injected
+content variables (see sendEmailWithTemplate).
+
+Current date: {{currentDate}}
