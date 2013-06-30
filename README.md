@@ -153,8 +153,8 @@ $contentVars = [
 
 $emailTemplateVo = (new \Simplon\Email\Vo\EmailTemplateVo())
    ->setPathRootTemplates($emailConfigVo->getPathRootTemplates())
-   ->setFrom('tino@beatguide.me', 'Tino')
-   ->setTo('ehrich@efides.com')
+   ->setFrom('name@mailer.from', 'FromName')
+   ->setTo('name@receiver.to')
    ->setSubject('Herro!')
    ->setPathTemplatePlainFile('tmpl01/plain_template.txt')
    ->setPathContentPlainFile('tmpl01/plain_content.txt')
@@ -247,8 +247,8 @@ $contentVars = [
 // set vo
 $emailTemplateVo = (new \Simplon\Email\Vo\EmailTemplateVo())
    ->setPathRootTemplates($emailConfigVo->getPathRootTemplates())
-   ->setFrom('tino@beatguide.me', 'Tino')
-   ->setTo('ehrich@efides.com')
+   ->setFrom('name@mailer.from', 'FromName')
+   ->setTo('name@receiver.to')
    ->setSubject('Herro!')
    ->setPathTemplatePlainFile('tmpl01/plain_template.txt')
    ->setPathContentPlainFile('tmpl01/plain_content.txt')
