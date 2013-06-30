@@ -6,15 +6,16 @@
 
     // set config
     $emailConfigVo = (new \Simplon\Email\Vo\EmailConfigVo())
-        ->setEnvironment(\Simplon\Email\EmailEnvironmentConstants::LOCAL)
+        ->setTransportInstance(Swift_SmtpTransport::newInstance())
         ->setPathRootTemplates(__DIR__ . '/templates');
 
     // ------------------------------------------
 
     // set content vars
     $contentVars = [
-        'currentDate' => date('r'),
-        'name'        => 'Jimmy',
+        'name' => 'Tino',
+        'age'  => 32,
+        'date' => date('r'),
     ];
 
     // set vo
@@ -32,5 +33,5 @@
     // send email
     $response = (new \Simplon\Email\Email($emailConfigVo))->sendEmailByTemplate($emailTemplateVo);
 
-    echo '<h1>Sent?</h1>';
+    // BOOL to indicate if all went fine
     var_dump($response);

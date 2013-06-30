@@ -6,7 +6,7 @@
 
     // set config
     $emailConfigVo = (new \Simplon\Email\Vo\EmailConfigVo())
-        ->setEnvironment(\Simplon\Email\EmailEnvironmentConstants::LOCAL);
+        ->setTransportInstance(Swift_MailTransport::newInstance());
 
     // ------------------------------------------
 
@@ -23,5 +23,5 @@
     // send email
     $response = (new \Simplon\Email\Email($emailConfigVo))->sendEmail($emailVo);
 
-    echo '<h1>Sent?</h1>';
+    // BOOL to indicate if all went fine
     var_dump($response);

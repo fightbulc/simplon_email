@@ -2,23 +2,24 @@
 
     namespace Simplon\Email\Vo;
 
+    use Simplon\Helper\Helper;
+
     class EmailConfigVo
     {
-        protected $_environment;
-        protected $_smptHost;
-        protected $_smptPort;
+        /** @var \Swift_MailTransport|\Swift_SmtpTransport */
+        protected $_transportInstance;
         protected $_pathRootTemplates;
 
         // ######################################
 
         /**
-         * @param mixed $environment
+         * @param \Swift_MailTransport|\Swift_SmtpTransport $mailtransportInstance
          *
          * @return EmailConfigVo
          */
-        public function setEnvironment($environment)
+        public function setTransportInstance($mailtransportInstance)
         {
-            $this->_environment = $environment;
+            $this->_transportInstance = $mailtransportInstance;
 
             return $this;
         }
@@ -26,71 +27,17 @@
         // ######################################
 
         /**
-         * @return mixed
-         */
-        public function getEnvironment()
-        {
-            return $this->_environment;
-        }
-
-        // ######################################
-
-        /**
-         * @param mixed $smptHost
-         *
-         * @return EmailConfigVo
-         */
-        public function setSmptHost($smptHost)
-        {
-            $this->_smptHost = $smptHost;
-
-            return $this;
-        }
-
-        // ######################################
-
-        /**
-         * @return mixed
+         * @return \Swift_MailTransport|\Swift_SmtpTransport
          * @throws \Exception
          */
-        public function getSmptHost()
+        public function getTransportInstance()
         {
-            if (empty($this->_smptHost))
+            if (empty($this->_transportInstance))
             {
-                throw new \Exception(__CLASS__ . ": missing smpt host.", 500);
+                throw new \Exception(__CLASS__ . ": missing MailTransportInstance (Swift_MailTransport() | Swift_SmtpTransport(host, port)).", 500);
             }
 
-            return $this->_smptHost;
-        }
-
-        // ######################################
-
-        /**
-         * @param mixed $smptPort
-         *
-         * @return EmailConfigVo
-         */
-        public function setSmptPort($smptPort)
-        {
-            $this->_smptPort = $smptPort;
-
-            return $this;
-        }
-
-        // ######################################
-
-        /**
-         * @return mixed
-         * @throws \Exception
-         */
-        public function getSmptPort()
-        {
-            if (empty($this->_smptPort))
-            {
-                throw new \Exception(__CLASS__ . ": missing smpt port.", 500);
-            }
-
-            return $this->_smptPort;
+            return $this->_transportInstance;
         }
 
         // ######################################
@@ -110,7 +57,7 @@
         // ######################################
 
         /**
-         * @return mixed
+         * @return string
          * @throws \Exception
          */
         public function getPathRootTemplates()
@@ -120,6 +67,6 @@
                 throw new \Exception(__CLASS__ . ": missing path to root templates folder.", 500);
             }
 
-            return $this->_pathRootTemplates;
+            return Helper::pathTrim($this->_pathRootTemplates);
         }
     }

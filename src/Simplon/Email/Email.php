@@ -36,31 +36,9 @@
          */
         protected function _getMailerTransport()
         {
-            $environmentName = $this
+            return $this
                 ->_getEmailConfigVo()
-                ->getEnvironment();
-
-            // ----------------------------------
-            // local development environment
-
-            if ($environmentName === EmailEnvironmentConstants::LOCAL)
-            {
-                return \Swift_MailTransport::newInstance();
-            }
-
-            // ----------------------------------
-            // live environment
-
-            $smtpHost = $this
-                ->_getEmailConfigVo()
-                ->getSmptHost();
-
-            $smtpPort = $this
-                ->_getEmailConfigVo()
-                ->getSmptPort();
-
-            // smtp
-            return \Swift_SmtpTransport::newInstance($smtpHost, $smtpPort);
+                ->getTransportInstance();
         }
 
         // ##########################################
@@ -137,7 +115,8 @@
 
                 foreach ($contentImages as $image)
                 {
-                    $cid = $messageInstance->embed(\Swift_Image::fromPath($pathTemplates . $image));
+                    $image = Helper::urlTrim($image);
+                    $cid = $messageInstance->embed(\Swift_Image::fromPath("{$pathTemplates}/{$image}"));
                     $content = str_replace('{{image:' . $image . '}}', $cid, $content);
                 }
             }

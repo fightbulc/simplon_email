@@ -16,4 +16,4 @@ FOOTER
 A template can also hold all injected
 content variables (see sendEmailWithTemplate).
 
-Current date: {{currentDate}}
+Today is {{date}}
