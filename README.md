@@ -53,7 +53,7 @@ Building an email comes in two easy steps. The first step is about defining our 
 
 All what is needed is to tell the class where to find our templates for this particular email. Templates are separated in two different types:
 
-_Base templates_
+**Base templates**
 - NOT required
 - need to be named "base.plain" \ "base.html"
 
@@ -81,7 +81,7 @@ content variables, too. See below:
 Today is {{date}}
 ```
 
-_Content templates_
+**Content templates**
 - required
 - need to be named "content.plain" \ "content.html"
 
@@ -96,7 +96,8 @@ Be nice, {{name}}!
 Thanks
 Tino
 
-PS: {{name}}'s age is {{age}}```
+PS: {{name}}'s age is {{age}}
+```
 
 Note: We enforce these names just to make it as easy and as quick as possible to setup your email.
 

@@ -1,0 +1,11 @@
+<?php
+
+    $config = [
+        'toAddress'   => 'foo@bar.com',
+        'toName'      => 'Foo Bar',
+
+        // --------------------------------------
+
+        'fromAddress' => 'bax@max.com',
+        'fromName'    => 'Bax Max',
+    ];

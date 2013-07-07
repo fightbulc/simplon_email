@@ -1,0 +1,12 @@
+Oh herro!
+
+This is an email without a base-template.
+It can receive content variables such as
+the recipients name.
+
+Be nice, {{name}}!
+
+Thanks
+Tino
+
+PS: {{name}}'s age is {{age}}

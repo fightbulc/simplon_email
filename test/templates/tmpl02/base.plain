@@ -1,0 +1,20 @@
+HEADER
+
+#################################################
+
+A base-template is the basis to all
+content-templates. Content will replace the
+following placeholder:
+
+{{content}}
+
+#################################################
+
+FOOTER
+
+-------------------------------------------------
+
+A base-template can read all injected
+content variables, too. See below:
+
+Today is {{date}}
