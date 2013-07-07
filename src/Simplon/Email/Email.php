@@ -2,31 +2,34 @@
 
     namespace Simplon\Email;
 
-    use Simplon\Email\Vo\EmailConfigVo;
-    use Simplon\Email\Vo\EmailTemplateVo;
+    use Simplon\Email\Vo\EmailContentVo;
+    use Simplon\Email\Vo\EmailTransportVo;
     use Simplon\Email\Vo\EmailVo;
     use Simplon\Helper\Helper;
 
     class Email
     {
-        /** @var \Simplon\Email\Vo\EmailConfigVo EmailConfigVo */
-        protected $_emailConfigVo;
+        /** @var \Simplon\Email\Vo\EmailTransportVo EmailConfigVo */
+        protected $_emailTransportVo;
+
+        /** @var EmailContentVo */
+        protected $_emailContentVo;
 
         // ##########################################
 
-        public function __construct(EmailConfigVo $emailConfigVo)
+        public function __construct(EmailTransportVo $emailTransportVo)
         {
-            $this->_emailConfigVo = $emailConfigVo;
+            $this->_emailTransportVo = $emailTransportVo;
         }
 
         // ##########################################
 
         /**
-         * @return EmailConfigVo
+         * @return EmailTransportVo
          */
-        protected function _getEmailConfigVo()
+        protected function _getEmailTransportVo()
         {
-            return $this->_emailConfigVo;
+            return $this->_emailTransportVo;
         }
 
         // ##########################################
@@ -37,7 +40,7 @@
         protected function _getMailerTransport()
         {
             return $this
-                ->_getEmailConfigVo()
+                ->_getEmailTransportVo()
                 ->getTransportInstance();
         }
 
@@ -78,63 +81,35 @@
         // ######################################
 
         /**
-         * @param $content
-         *
-         * @return array|bool
-         */
-        protected function _findContentImages($content)
-        {
-            preg_match_all('/{{image:(.*?)}}/u', $content, $matches);
-
-            if (isset($matches[1]))
-            {
-                return $matches[1];
-            }
-
-            return FALSE;
-        }
-
-        // ######################################
-
-        /**
-         * @param $messageInstance
-         * @param $content
+         * @param \Swift_Message $messageInstance
+         * @param $contentHtml
+         * @param array $embeddedImages
          *
          * @return mixed
          */
-        protected function _renderContentImages(\Swift_Message $messageInstance, $content)
+        protected function _embedContentImages(\Swift_Message $messageInstance, $contentHtml, array $embeddedImages)
         {
-            $contentImages = $this->_findContentImages($content);
-
-            if ($contentImages !== FALSE)
+            if ($embeddedImages !== NULL)
             {
-                // get templates path
-                $pathTemplates = $this
-                    ->_getEmailConfigVo()
-                    ->getPathRootTemplates();
-
-                foreach ($contentImages as $image)
+                foreach ($embeddedImages as $stackIndex => $pathImage)
                 {
-                    $image = Helper::urlTrim($image);
-                    $cid = $messageInstance->embed(\Swift_Image::fromPath("{$pathTemplates}/{$image}"));
-                    $content = str_replace('{{image:' . $image . '}}', $cid, $content);
+                    $cid = $messageInstance->embed(\Swift_Image::fromPath($pathImage));
+                    $contentHtml = str_replace('{{imageStackIndex:' . $stackIndex . '}}', $cid, $contentHtml);
                 }
             }
 
-            return $content;
+            return $contentHtml;
         }
 
         // ##########################################
 
-        /**
-         * @param EmailVo $emailVo
-         *
-         * @return array|bool
-         */
         public function sendEmail(EmailVo $emailVo)
         {
             // create message instance
-            $messageInstance = \Swift_Message::newInstance();
+            $messageInstance = \Swift_Message::newInstance()
+                ->setFrom($emailVo->getFrom())
+                ->setTo($emailVo->getTo())
+                ->setSubject($emailVo->getSubject());
 
             // ----------------------------------
 
@@ -142,69 +117,13 @@
             $plainContent = $emailVo->getBodyPlain();
             $htmlContent = $emailVo->getBodyHtml();
 
-            // parse for images
-            $htmlContent = $this->_renderContentImages($messageInstance, $htmlContent);
-
-            // ----------------------------------
-
-            // set message contents
-            $messageInstance
-                ->setFrom($emailVo->getFrom())
-                ->setTo($emailVo->getTo())
-                ->setSubject($emailVo->getSubject());
-
             // add html
-            if (!empty($htmlContent))
+            if ($htmlContent !== NULL)
             {
-                $messageInstance
-                    ->setBody($htmlContent, 'text/html')
-                    ->addPart($plainContent, 'text/plain');
-            }
+                // render embedded images
+                $htmlContent = $this->_embedContentImages($messageInstance, $htmlContent, $emailVo->getEmbeddedImages());
 
-            // send only plain
-            else
-            {
-                $messageInstance->setBody($plainContent, 'text/plain');
-            }
-
-            // ----------------------------------
-
-            // send message
-            return $this->_sendMessageInstance($messageInstance);
-        }
-
-        // ##########################################
-
-        /**
-         * @param EmailTemplateVo $emailTemplateVo
-         *
-         * @return array|bool
-         */
-        public function sendEmailByTemplate(EmailTemplateVo $emailTemplateVo)
-        {
-            // create message instance
-            $messageInstance = \Swift_Message::newInstance();
-
-            // ----------------------------------
-
-            // get contents
-            $plainContent = $emailTemplateVo->getBodyPlain();
-            $htmlContent = $emailTemplateVo->getBodyHtml();
-
-            // parse for images
-            $htmlContent = $this->_renderContentImages($messageInstance, $htmlContent);
-
-            // ----------------------------------
-
-            // set message contents
-            $messageInstance
-                ->setFrom($emailTemplateVo->getFrom())
-                ->setTo($emailTemplateVo->getTo())
-                ->setSubject($emailTemplateVo->getSubject());
-
-            // add html
-            if (!empty($htmlContent))
-            {
+                // set contents
                 $messageInstance
                     ->setBody($htmlContent, 'text/html')
                     ->addPart($plainContent, 'text/plain');

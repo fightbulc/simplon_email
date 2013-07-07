@@ -25,11 +25,8 @@
         /** @var string */
         protected $_subject;
 
-        /** @var string */
-        protected $_bodyPlain;
-
-        /** @var string */
-        protected $_bodyHtml;
+        /** @var EmailContentVo */
+        protected $_emailContentVo;
 
         // ######################################
 
@@ -37,7 +34,7 @@
          * @param $address
          * @param $name
          *
-         * @return $this
+         * @return EmailVo
          */
         public function setFrom($address, $name = NULL)
         {
@@ -68,7 +65,7 @@
          * @param $address
          * @param $name
          *
-         * @return $this
+         * @return EmailVo
          */
         public function setTo($address, $name = NULL)
         {
@@ -98,7 +95,7 @@
         /**
          * @param array $addresses
          *
-         * @return $this
+         * @return EmailVo
          */
         public function setCc(array $addresses)
         {
@@ -127,7 +124,7 @@
         /**
          * @param array $addresses
          *
-         * @return $this
+         * @return EmailVo
          */
         public function setBcc(array $addresses)
         {
@@ -156,7 +153,7 @@
         /**
          * @param $value
          *
-         * @return $this
+         * @return EmailVo
          */
         public function setSubject($value)
         {
@@ -178,13 +175,13 @@
         // ######################################
 
         /**
-         * @param $plain
+         * @param EmailContentVo $emailContentVo
          *
-         * @return $this
+         * @return EmailVo
          */
-        public function setBodyPlain($plain)
+        public function setEmailContentVo(EmailContentVo $emailContentVo)
         {
-            $this->_bodyPlain = $plain;
+            $this->_emailContentVo = $emailContentVo;
 
             return $this;
         }
@@ -192,34 +189,68 @@
         // ######################################
 
         /**
-         * @return string
+         * @return EmailContentVo
+         * @throws \Exception
+         */
+        protected function _getEmailContentVo()
+        {
+            if ($this->_emailContentVo instanceof EmailContentVo)
+            {
+                return $this->_emailContentVo;
+            }
+
+            throw new \Exception(__CLASS__ . ": missing EmailContentVo.", 500);
+        }
+
+        // ######################################
+
+        /**
+         * @return mixed|null
+         * @throws \Exception
          */
         public function getBodyPlain()
         {
-            return $this->_bodyPlain;
+            $emailContentVo = $this->_getEmailContentVo();
+
+            if ($emailContentVo->hasContentPlain())
+            {
+                return $emailContentVo->getBodyPlain();
+            }
+
+            throw new \Exception(__CLASS__ . ": missing plain content body. You need at least a plain body.", 500);
         }
 
         // ######################################
 
         /**
-         * @param $html
-         *
-         * @return $this
-         */
-        public function setBodyHtml($html)
-        {
-            $this->_bodyHtml = $html;
-
-            return $this;
-        }
-
-        // ######################################
-
-        /**
-         * @return string
+         * @return mixed|null
          */
         public function getBodyHtml()
         {
-            return $this->_bodyHtml;
+            $emailContentVo = $this->_getEmailContentVo();
+
+            if ($emailContentVo->hasContentHtml())
+            {
+                return $emailContentVo->getBodyHtml();
+            }
+
+            return NULL;
+        }
+
+        // ######################################
+
+        /**
+         * @return array|null
+         */
+        public function getEmbeddedImages()
+        {
+            $emailContentVo = $this->_getEmailContentVo();
+
+            if ($emailContentVo->hasContentHtml())
+            {
+                return $emailContentVo->getEmbeddedImages();
+            }
+
+            return NULL;
         }
     }

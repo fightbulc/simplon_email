@@ -11,7 +11,7 @@
 
 This library helps to build emails by utilising [SwiftMailer](https://github.com/swiftmailer/swiftmailer).
 
-It enables the developer to send an email as plain/html version with automatic image detection/inline injection. It is possible to set the plain/html body directly or to via templates in combination with variable injection.
+It enables the developer to send an email as plain/html version with automatic image detection/inline injection. It enforces template abstraction and offers injection of data.
 
 ### Setup
 
@@ -20,244 +20,178 @@ Since its a composer package all you need to to do is require it within your com
 ```json
 {
      "require": {
-        "simplon/email": "0.0.*"
+        "simplon/email": "0.1.*"
      }
 }
 ```
 
 If you dont know what ```composer``` is you should have a look at [Composer's Webpage](http://getcomposer.org/doc/00-intro.md).
 
-### Send a basic email
+### EmailTransportVo
 
-#### EmailConfigVo
-
-This class holds our config data which will be injected through the Email class constructor. There is only one thing which needs to be set to get it running: transport instance for sending our email.
+This class holds our chosen email transport instance in order to send emails.
 
 ```php
 // php's internal mail
-$emailConfigVo = (new \Simplon\Email\Vo\EmailConfigVo())
+$emailTransportVo = (new \Simplon\Email\Vo\EmailTransportVo())
    ->setTransportInstance(Swift_MailTransport::newInstance());
 
 // or via smtp transport
-$emailConfigVo = (new \Simplon\Email\Vo\EmailConfigVo())
+$emailTransportVo = (new \Simplon\Email\Vo\EmailTransportVo())
    ->setTransportInstance(Swift_SmtpTransport::newInstance('localhost', 25));
 ```
 
-In case you want to parse for images within your html body you should also provide a root path to your template directory. We assume that templates and images are located under the same template directory.
+### Email setup
 
-```php
-// php's internal mail and root path templates
-$emailConfigVo = (new \Simplon\Email\Vo\EmailConfigVo())
-   ->setTransportInstance(Swift_MailTransport::newInstance())
-   ->setPathRootTemplates(__DIR__ . '/templates');
-```
+#### Intro
 
-```html
-<h1>Hello world!</h1>
-{{image:folder01/logo.png}}
-```
+We use builder pattern classes to define our email. It's really simple and helps us to stay in control of our data.
 
-The above configuration would find the defined image within ```__DIR__ . '/templates/folder01/logo.png'```.
-
-#### Defining an email
-
-We use a builder pattern to define our email. It's really simple and doesn't demand any further insight:
-
-```php
-$emailVo = (new \Simplon\Email\Vo\EmailVo())
-   ->setFrom('name@mailer.from', 'FromName')
-   ->setTo('name@receiver.to')
-   ->setSubject('Basic email')
-   ->setBodyPlain('Hey man! Hope this email finds you well!')
-   ->setBodyHtml('<h1>Hey man!</h1> Hope this email finds you well!');
-```
-
-That's all what it takes. Now we can take our defined email in ```$emailVo``` and pass it on to our Email class.
-
-#### Complete example
-
-See the following complete example of sending a basic email.
-
-```php
-require __DIR__ . '/../vendor/autoload.php';
-
-// ##########################################
-
-// set config
-$emailConfigVo = (new \Simplon\Email\Vo\EmailConfigVo())
-   ->setTransportInstance(Swift_MailTransport::newInstance());
-
-// ------------------------------------------
-
-// set vo
-$emailVo = (new \Simplon\Email\Vo\EmailVo())
-   ->setFrom('name@mailer.from', 'FromName')
-   ->setTo('name@receiver.to')
-   ->setSubject('Basic email')
-   ->setBodyPlain('Hey man! Hope this email finds you well!')
-   ->setBodyHtml('<h1>Hey man!</h1> Hope this email finds you well!');
-
-// ------------------------------------------
-
-// send email
-$response = (new \Simplon\Email\Email($emailConfigVo))->sendEmail($emailVo);
-
-// BOOL to indicate if all went fine
-var_dump($response);
-```
-
-### Send an email based on templates
-
-#### EmailConfigVo
-
-Same as written above applies here. Only difference you always need to define the root template path:
-
-```php
-// php's internal mail and root path templates
-$emailConfigVo = (new \Simplon\Email\Vo\EmailConfigVo())
-   ->setTransportInstance(Swift_MailTransport::newInstance())
-   ->setPathRootTemplates(__DIR__ . '/templates');
-```
-
-#### Defining a template email
-
-Again, same as above but the template fields as well as some content variables.
-
-#### Plain email
-
-```php
-$contentVars = [
-   'name' => 'Tino',
-   'age'  => 32,
-   'date' => date('r'),
-];
-
-$emailTemplateVo = (new \Simplon\Email\Vo\EmailTemplateVo())
-   ->setPathRootTemplates($emailConfigVo->getPathRootTemplates())
-   ->setFrom('name@mailer.from', 'FromName')
-   ->setTo('name@receiver.to')
-   ->setSubject('Herro!')
-   ->setPathTemplatePlainFile('tmpl01/plain_template.txt')
-   ->setPathContentPlainFile('tmpl01/plain_content.txt')
-   ->setContentVariables($contentVars);
-```
-
-#### Plain/Html email
-
-```php
-$contentVars = [
-   'name' => 'Tino',
-   'age'  => 32,
-   'date' => date('r'),
-];
-
-$emailTemplateVo = (new \Simplon\Email\Vo\EmailTemplateVo())
-   ->setPathRootTemplates($emailConfigVo->getPathRootTemplates())
-   ->setFrom('name@mailer.from', 'FromName')
-   ->setTo('name@receiver.to')
-   ->setSubject('Herro!')
-   ->setPathTemplatePlainFile('tmpl01/plain_template.txt')
-   ->setPathContentPlainFile('tmpl01/plain_content.txt')
-   ->setPathTemplateHtmlFile('tmpl01/html_template.html')
-   ->setPathContentHtmlFile('tmpl01/html_content.html')
-   ->setContentVariables($contentVars);
-```
-
-The only thing left now are the templates. See the following section.
+Building an email comes in two easy steps. The first step is about defining our email content with the help of templates. The second step defines the sender/recipient data as well as a subject.
 
 #### Templates
 
-All templates need to be located below the defined ```setPathRootTemplates```. Templates are defined by two types:
+All what is needed is to tell the class where to find our templates for this particular email. Templates are separated in two different types:
 
-##### A structural template (tmpl01/plain_template.txt)
+_Base templates_
+- NOT required
+- need to be named "base.plain" \ "base.html"
 
-```text
+Example:
+```plain
 HEADER
 
-###################
+#################################################
+
+A base-template is the basis to all
+content-templates. Content will replace the
+following placeholder:
 
 {{content}}
 
-###################
+#################################################
 
 FOOTER
 
--------------------
+-------------------------------------------------
 
-Yes we can inject
-content vars here too:
+A base-template can read all injected
+content variables, too. See below:
 
-{{date}}
+Today is {{date}}
 ```
 
-##### A content template (tmpl01/plain_content.txt)
+_Content templates_
+- required
+- need to be named "content.plain" \ "content.html"
 
-```text
-This is my content template
-with content variables such as
-{{name}} and {{age}}.
+```plain
+Oh herro!
+
+This is a content template which can receive
+content variables such as the recipients name.
+
+Be nice, {{name}}!
+
+Thanks
+Tino
+
+PS: {{name}}'s age is {{age}}```
+
+Note: We enforce these names just to make it as easy and as quick as possible to setup your email.
+
+Here is a snapshot from a template folder who holds all data for a multipart email (plain/html):
+
+```bash
+drwxr-xr-x  7 fightbulc  staff     238  7 Jul 13:29 .
+drwxr-xr-x  6 fightbulc  staff     204  7 Jul 13:17 ..
+-rw-r--r--  1 fightbulc  staff     498  7 Jul 13:12 base.html
+-rw-r--r--  1 fightbulc  staff     377  7 Jul 13:12 base.plain
+-rw-r--r--@ 1 fightbulc  staff  170870  6 Jul 13:54 boat.jpg
+-rw-r--r--  1 fightbulc  staff     332  7 Jul 13:29 content.html
+-rw-r--r--  1 fightbulc  staff     166 30 Jun 15:54 content.plain
 ```
 
-##### Final email body
+#### Set content
 
-```text
-HEADER
+Cool, lets set some data which will be injected in to our content templates and tell our class where to look for the templates.
 
-###################
+```php
+// set content variables
+$contentVariables = [
+    'name' => 'Tino',
+    'age'  => 32,
+    'date' => date('r'),
+];
 
-This is my content template
-with content variables such as
-Tino and 32.
-
-###################
-
-FOOTER
-
--------------------
-
-Yes we can inject
-content vars here too:
-
-Sun, 30 Jun 2013 10:44:20 +0000
+// set email content
+$emailContentVo = (new \Simplon\Email\Vo\EmailContentVo())
+    ->setPathTemplates(__DIR__ . '/templates/tmpl01')
+    ->setContentVariables($contentVariables);
 ```
 
-#### Complete example
+#### Set sender/recipient data
 
-See the following complete example of sending an email with templates.
+Now lets set our sender/recipient data and add our defined contents:
+
+```php
+$emailVo = (new \Simplon\Email\Vo\EmailVo())
+    ->setFrom($config['fromAddress'], $config['fromName'])
+    ->setTo($config['toAddress'], $config['toName'])
+    ->setSubject('Herro!')
+    ->setEmailContentVo($emailContentVo);
+```
+
+#### Send email
+
+Almost done. Just pass our builder classes and the email is as good as gone :)
+
+```php
+$response = (new \Simplon\Email\Email($emailTransportVo))->sendEmail($emailVo);
+```
+
+### Complete example
+
+See the following complete example of sending an email.
 
 ```php
 require __DIR__ . '/../vendor/autoload.php';
 
+// load test data
+require __DIR__ . '/config.php';
+
 // ##########################################
 
-// set config
-$emailConfigVo = (new \Simplon\Email\Vo\EmailConfigVo())
-   ->setTransportInstance(Swift_SmtpTransport::newInstance())
-   ->setPathRootTemplates(__DIR__ . '/templates');
+// set content variables
+$contentVariables = [
+    'name' => 'Tino',
+    'age'  => 32,
+    'date' => date('r'),
+];
+
+// set email content
+$emailContentVo = (new \Simplon\Email\Vo\EmailContentVo())
+    ->setPathTemplates(__DIR__ . '/templates/tmpl01')
+    ->setContentVariables($contentVariables);
 
 // ------------------------------------------
 
-// set content vars
-$contentVars = [
-   'name' => 'Tino',
-   'age'  => 32,
-   'date' => date('r'),
-];
+// set email
+$emailVo = (new \Simplon\Email\Vo\EmailVo())
+    ->setFrom($config['fromAddress'], $config['fromName'])
+    ->setTo($config['toAddress'], $config['toName'])
+    ->setSubject('Herro!')
+    ->setEmailContentVo($emailContentVo);
 
-// set vo
-$emailTemplateVo = (new \Simplon\Email\Vo\EmailTemplateVo())
-   ->setPathRootTemplates($emailConfigVo->getPathRootTemplates())
-   ->setFrom('name@mailer.from', 'FromName')
-   ->setTo('name@receiver.to')
-   ->setSubject('Herro!')
-   ->setPathTemplatePlainFile('tmpl01/plain_template.txt')
-   ->setPathContentPlainFile('tmpl01/plain_content.txt')
-   ->setContentVariables($contentVars);
+// ------------------------------------------
+
+// set transport
+$emailTransportVo = new \Simplon\Email\Vo\EmailTransportVo(Swift_MailTransport::newInstance());
 
 // ------------------------------------------
 
 // send email
-$response = (new \Simplon\Email\Email($emailConfigVo))->sendEmailByTemplate($emailTemplateVo);
+$response = (new \Simplon\Email\Email($emailTransportVo))->sendEmail($emailVo);
 
 // BOOL to indicate if all went fine
 var_dump($response);
