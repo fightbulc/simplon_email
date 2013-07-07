@@ -101,13 +101,30 @@ PS: {{name}}'s age is {{age}}
 
 Note: We enforce these names just to make it as easy and as quick as possible to setup your email.
 
-Here is a snapshot from a template folder who holds all data for a multipart email (plain/html):
+Here is a snapshot from our test template folders which hold all data:
 
+**Folder structure***
 ```bash
-drwxr-xr-x  7 fightbulc  staff     238  7 Jul 13:29 .
-drwxr-xr-x  6 fightbulc  staff     204  7 Jul 13:17 ..
--rw-r--r--  1 fightbulc  staff     498  7 Jul 13:12 base.html
--rw-r--r--  1 fightbulc  staff     377  7 Jul 13:12 base.plain
+|-templates
+|---base
+|---content
+|-----tmpl01
+|-----tmpl02
+|-----tmpl03
+```
+
+**Base templates**
+```bash
+drwxr-xr-x  4 fightbulc  staff  136  7 Jul 15:52 .
+drwxr-xr-x  5 fightbulc  staff  170  7 Jul 15:52 ..
+-rw-r--r--  1 fightbulc  staff  498  7 Jul 13:12 base.html
+-rw-r--r--  1 fightbulc  staff  377  7 Jul 13:27 base.plain
+```
+
+**Content templates** (example multipart email)
+```bash
+drwxr-xr-x  5 fightbulc  staff     170  7 Jul 15:52 .
+drwxr-xr-x  6 fightbulc  staff     204  7 Jul 15:52 ..
 -rw-r--r--@ 1 fightbulc  staff  170870  6 Jul 13:54 boat.jpg
 -rw-r--r--  1 fightbulc  staff     332  7 Jul 13:29 content.html
 -rw-r--r--  1 fightbulc  staff     166 30 Jun 15:54 content.plain
@@ -115,7 +132,7 @@ drwxr-xr-x  6 fightbulc  staff     204  7 Jul 13:17 ..
 
 #### Set content
 
-Cool, lets set some data which will be injected in to our content templates and tell our class where to look for the templates.
+Cool, lets set some data which will be injected in to our base/content templates and tell our class where to look for the templates.
 
 ```php
 // set content variables
@@ -127,7 +144,8 @@ $contentVariables = [
 
 // set email content
 $emailContentVo = (new \Simplon\Email\Vo\EmailContentVo())
-    ->setPathTemplates(__DIR__ . '/templates/tmpl01')
+    ->setPathBaseTemplates(__DIR__ . '/templates/base')     /* only wanna use a content file? leave this setter out */
+    ->setPathContentTemplates(__DIR__ . '/templates/content/tmpl01')
     ->setContentVariables($contentVariables);
 ```
 
@@ -172,7 +190,8 @@ $contentVariables = [
 
 // set email content
 $emailContentVo = (new \Simplon\Email\Vo\EmailContentVo())
-    ->setPathTemplates(__DIR__ . '/templates/tmpl01')
+    ->setPathBaseTemplates(__DIR__ . '/templates/base')
+    ->setPathContentTemplates(__DIR__ . '/templates/content/tmpl01')
     ->setContentVariables($contentVariables);
 
 // ------------------------------------------

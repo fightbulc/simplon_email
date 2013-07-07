@@ -10,7 +10,10 @@
         protected $_fileNameContentTemplate = 'content';
 
         /** @var String */
-        protected $_pathTemplates;
+        protected $_pathBaseTemplates;
+
+        /** @var String */
+        protected $_pathContentTemplates;
 
         /** @var Array */
         protected $_contentVariables = [];
@@ -46,9 +49,22 @@
          *
          * @return string
          */
-        protected function _buildPathFile($typeTemplate, $typeContent = 'plain')
+        protected function _buildPathBaseFile($typeTemplate, $typeContent = 'plain')
         {
-            return "{$this->_getPathTemplates()}/{$typeTemplate}.{$typeContent}";
+            return "{$this->_getPathBaseTemplates()}/{$typeTemplate}.{$typeContent}";
+        }
+
+        // ######################################
+
+        /**
+         * @param $typeTemplate
+         * @param string $typeContent
+         *
+         * @return string
+         */
+        protected function _buildPathContentFile($typeTemplate, $typeContent = 'plain')
+        {
+            return "{$this->_getPathContentTemplates()}/{$typeTemplate}.{$typeContent}";
         }
 
         // ######################################
@@ -140,7 +156,7 @@
         {
             $nameImage = Helper::urlTrim($nameImage);
 
-            return "{$this->_getPathTemplates()}/{$nameImage}";
+            return "{$this->_getPathContentTemplates()}/{$nameImage}";
         }
 
         // ######################################
@@ -174,9 +190,9 @@
          *
          * @return EmailContentVo
          */
-        public function setPathTemplates($pathTemplates)
+        public function setPathBaseTemplates($pathTemplates)
         {
-            $this->_pathTemplates = $pathTemplates;
+            $this->_pathBaseTemplates = $pathTemplates;
 
             return $this;
         }
@@ -186,9 +202,43 @@
         /**
          * @return string
          */
-        protected function _getPathTemplates()
+        protected function _getPathBaseTemplates()
         {
-            return Helper::pathTrim($this->_pathTemplates);
+            return Helper::pathTrim($this->_pathBaseTemplates);
+        }
+
+        // ######################################
+
+        /**
+         * @return bool
+         */
+        protected function _hasPathBaseTemplates()
+        {
+            return empty($this->_pathBaseTemplates) ? FALSE : TRUE;
+        }
+
+        // ######################################
+
+        /**
+         * @param mixed $pathTemplates
+         *
+         * @return EmailContentVo
+         */
+        public function setPathContentTemplates($pathTemplates)
+        {
+            $this->_pathContentTemplates = $pathTemplates;
+
+            return $this;
+        }
+
+        // ######################################
+
+        /**
+         * @return string
+         */
+        protected function _getPathContentTemplates()
+        {
+            return Helper::pathTrim($this->_pathContentTemplates);
         }
 
         // ######################################
@@ -222,7 +272,7 @@
          */
         protected function _getPathBasePlainFile()
         {
-            return $this->_buildPathFile($this->_getFileNameBaseTemplate(), 'plain');
+            return $this->_buildPathBaseFile($this->_getFileNameBaseTemplate(), 'plain');
         }
 
         // ######################################
@@ -232,11 +282,14 @@
          */
         protected function _getFileBasePlain()
         {
-            $basePlain = $this->_fetchTemplateFile($this->_getPathBasePlainFile());
-
-            if ($basePlain !== FALSE)
+            if ($this->_hasPathBaseTemplates())
             {
-                return $basePlain;
+                $basePlain = $this->_fetchTemplateFile($this->_getPathBasePlainFile());
+
+                if ($basePlain !== FALSE)
+                {
+                    return $basePlain;
+                }
             }
 
             return FALSE;
@@ -259,7 +312,7 @@
          */
         protected function _getPathContentPlainFile()
         {
-            return $this->_buildPathFile($this->_getFileNameContentTemplate(), 'plain');
+            return $this->_buildPathContentFile($this->_getFileNameContentTemplate(), 'plain');
         }
 
         // ######################################
@@ -322,7 +375,7 @@
          */
         protected function _getPathBaseHtmlFile()
         {
-            return $this->_buildPathFile($this->_getFileNameBaseTemplate(), 'html');
+            return $this->_buildPathBaseFile($this->_getFileNameBaseTemplate(), 'html');
         }
 
         // ######################################
@@ -332,11 +385,14 @@
          */
         protected function _getFileBaseHtml()
         {
-            $baseHtml = $this->_fetchTemplateFile($this->_getPathBaseHtmlFile());
-
-            if ($baseHtml !== FALSE)
+            if ($this->_hasPathBaseTemplates())
             {
-                return $baseHtml;
+                $baseHtml = $this->_fetchTemplateFile($this->_getPathBaseHtmlFile());
+
+                if ($baseHtml !== FALSE)
+                {
+                    return $baseHtml;
+                }
             }
 
             return FALSE;
@@ -359,7 +415,7 @@
          */
         protected function _getPathContentHtmlFile()
         {
-            return $this->_buildPathFile($this->_getFileNameContentTemplate(), 'html');
+            return $this->_buildPathContentFile($this->_getFileNameContentTemplate(), 'html');
         }
 
         // ######################################

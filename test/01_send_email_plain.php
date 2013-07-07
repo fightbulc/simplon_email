@@ -16,7 +16,8 @@
 
     // set email content
     $emailContentVo = (new \Simplon\Email\Vo\EmailContentVo())
-        ->setPathTemplates(__DIR__ . '/templates/tmpl01')
+        ->setPathBaseTemplates(__DIR__ . '/templates/base')
+        ->setPathContentTemplates(__DIR__ . '/templates/content/tmpl01')
         ->setContentVariables($contentVariables);
 
     // ------------------------------------------
