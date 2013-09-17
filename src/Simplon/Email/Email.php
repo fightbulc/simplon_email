@@ -137,6 +137,16 @@
 
             // ----------------------------------
 
+            if ($emailVo->hasAttachments())
+            {
+                foreach ($emailVo->getAttachments() as $attachment)
+                {
+                    $messageInstance->attach($attachment);
+                }
+            }
+
+            // ----------------------------------
+
             // send message
             return $this->_sendMessageInstance($messageInstance);
         }

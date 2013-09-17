@@ -28,6 +28,9 @@
         /** @var EmailContentVo */
         protected $_emailContentVo;
 
+        /** @var \Swift_Attachment[] */
+        protected $_attachments = [];
+
         // ######################################
 
         /**
@@ -170,6 +173,42 @@
         public function getSubject()
         {
             return $this->_subject;
+        }
+
+        // ######################################
+
+        /**
+         * @param string $data
+         * @param string $fileName
+         * @param string|null $contentType
+         *
+         * @return $this
+         */
+        public function addAttachment($data, $fileName, $contentType = NULL)
+        {
+            $this->_attachments[] = \Swift_Attachment::newInstance($data, $fileName, $contentType);
+
+            return $this;
+        }
+
+        // ######################################
+
+        /**
+         * @return bool
+         */
+        public function hasAttachments()
+        {
+            return count($this->_attachments) !== 0;
+        }
+
+        // ######################################
+
+        /**
+         * @return \Swift_Attachment[]
+         */
+        public function getAttachments()
+        {
+            return $this->_attachments;
         }
 
         // ######################################
