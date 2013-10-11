@@ -94,7 +94,7 @@
                 // handle loops over arrays
                 if (is_array($v)){
                     $that = $this;
-                    $content = preg_replace_callback('/{{#' . $k . '}}(.*?){{\/' . $k . '}}/mu', function ($matches) use ($v, $that) {
+                    $content = preg_replace_callback('/{{#' . $k . '}}(.*?){{\/' . $k . '}}/sum', function ($matches) use ($v, $that) {
 
                         $content = '';
 
