@@ -87,11 +87,33 @@
          *
          * @return mixed
          */
-        protected function _renderContentVariables($content, array $vars)
+        public function renderContentVariables($content, array $vars)
         {
             foreach ($vars as $k => $v)
             {
-                $content = Helper::stringReplace('{{' . $k . '}}', $v, $content);
+                // handle loops over arrays
+                if (is_array($v)){
+                    $that = $this;
+                    $content = preg_replace_callback('/{{#' . $k . '}}(.*?){{\/' . $k . '}}/mu', function ($matches) use ($v, $that) {
+
+                        $content = '';
+
+                        foreach ($v as $item)
+                        {
+                            // this is why the method has to be public :)
+                            $content .= $that->renderContentVariables($matches[1], $item);
+                        }
+
+                        return $content;
+
+                    }, $content);
+                }
+
+                // handle string values
+                else
+                {
+                    $content = Helper::stringReplace('{{' . $k . '}}', $v, $content);
+                }
             }
 
             return $content;
@@ -352,14 +374,14 @@
             if ($this->hasContentPlain())
             {
                 // content
-                $contentPlain = $this->_renderContentVariables($this->_getFileContentPlain(), $this->_getContentVariables());
+                $contentPlain = $this->renderContentVariables($this->_getFileContentPlain(), $this->_getContentVariables());
 
                 // base
                 if ($this->_hasBasePlain())
                 {
                     $contentVariables = $this->_getContentVariables();
                     $contentVariables['content'] = $contentPlain;
-                    $contentPlain = $this->_renderContentVariables($this->_getFileBasePlain(), $contentVariables);
+                    $contentPlain = $this->renderContentVariables($this->_getFileBasePlain(), $contentVariables);
                 }
 
                 return $contentPlain;
@@ -455,14 +477,14 @@
             if ($this->hasContentHtml())
             {
                 // content
-                $contentHtml = $this->_renderContentVariables($this->_getFileContentHtml(), $this->_getContentVariables());
+                $contentHtml = $this->renderContentVariables($this->_getFileContentHtml(), $this->_getContentVariables());
 
                 // base
                 if ($this->_hasBaseHtml())
                 {
                     $contentVariables = $this->_getContentVariables();
                     $contentVariables['content'] = $contentHtml;
-                    $contentHtml = $this->_renderContentVariables($this->_getFileBaseHtml(), $contentVariables);
+                    $contentHtml = $this->renderContentVariables($this->_getFileBaseHtml(), $contentVariables);
                 }
 
                 // encode images
