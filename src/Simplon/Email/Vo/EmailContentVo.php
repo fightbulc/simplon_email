@@ -19,6 +19,9 @@
         protected $_contentVariables = [];
 
         /** @var Array */
+        protected $_localeStrings = [];
+
+        /** @var Array */
         protected $_embeddedImages = [];
 
         // ######################################
@@ -86,10 +89,19 @@
          *
          * @return mixed
          */
-        protected function _translateLanguageStrings($content)
+        protected function _translateLocaleStrings($content)
         {
-            return preg_replace_callback('/\'\'\'(.+?)\'\'\'/sum', function ($matches) {
-                return $matches[1];
+            $locale = $this->_getLocaleStrings();
+
+            return preg_replace_callback('/\'\'\'(.+?)\'\'\'/sum', function ($matches) use ($locale) {
+                $key = $matches[1];
+
+                if (isset($locale[$key]))
+                {
+                    return $locale[$key];
+                }
+
+                return $key;
             }, $content);
         }
 
@@ -103,7 +115,7 @@
          */
         public function renderContentVariables($content, array $vars)
         {
-            $content = $this->_translateLanguageStrings($content);
+            $content = $this->_translateLocaleStrings($content);
 
             foreach ($vars as $k => $v)
             {
@@ -301,6 +313,30 @@
         protected function _getContentVariables()
         {
             return $this->_contentVariables;
+        }
+
+        // ######################################
+
+        /**
+         * @param $localeStrings
+         *
+         * @return $this
+         */
+        public function setLocaleStrings($localeStrings)
+        {
+            $this->_localeStrings = $localeStrings;
+
+            return $this;
+        }
+
+        // ######################################
+
+        /**
+         * @return Array
+         */
+        protected function _getLocaleStrings()
+        {
+            return $this->_localeStrings;
         }
 
         // ######################################
