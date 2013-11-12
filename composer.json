@@ -2,7 +2,7 @@
     "name": "simplon/email",
     "description": "Email building library which utilises swiftmailer",
     "homepage": "https://github.com/fightbulc/simplon_email",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "type": "library",
     "keywords": ["email", "building", "templates", "mailer"],
     "license": "MIT",
