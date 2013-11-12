@@ -83,12 +83,28 @@
 
         /**
          * @param $content
+         *
+         * @return mixed
+         */
+        protected function _translateLanguageStrings($content)
+        {
+            return preg_replace_callback('/\'\'\'(.+?)\'\'\'/sum', function ($matches) {
+                return $matches[1];
+            }, $content);
+        }
+
+        // ######################################
+
+        /**
+         * @param $content
          * @param array $vars
          *
          * @return mixed
          */
         public function renderContentVariables($content, array $vars)
         {
+            $content = $this->_translateLanguageStrings($content);
+
             foreach ($vars as $k => $v)
             {
                 // handle loops over arrays
