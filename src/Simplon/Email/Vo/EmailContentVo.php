@@ -342,6 +342,23 @@
         // ######################################
 
         /**
+         * @param string $string
+         *
+         * @return string
+         */
+        public function getTranslation($string)
+        {
+            if (isset($this->_localeStrings[$string]))
+            {
+                return $this->_localeStrings[$string];
+            }
+
+            return $string;
+        }
+
+        // ######################################
+
+        /**
          * @return string
          */
         protected function _getPathBasePlainFile()

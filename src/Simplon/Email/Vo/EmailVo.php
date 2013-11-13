@@ -172,7 +172,7 @@
          */
         public function getSubject()
         {
-            return $this->_subject;
+            return $this->_getEmailContentVo()->getTranslation($this->_subject);
         }
 
         // ######################################
