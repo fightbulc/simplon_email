@@ -93,7 +93,8 @@
         {
             $locale = $this->_getLocaleStrings();
 
-            return preg_replace_callback('/\'\'\'(.+?)\'\'\'/sum', function ($matches) use ($locale) {
+            return preg_replace_callback('/\'\'\'(.+?)\'\'\'/sum', function ($matches) use ($locale)
+            {
                 $key = $matches[1];
 
                 if (isset($locale[$key]))
@@ -120,21 +121,27 @@
             foreach ($vars as $k => $v)
             {
                 // handle loops over arrays
-                if (is_array($v)){
+                if (is_array($v))
+                {
                     $that = $this;
-                    $content = preg_replace_callback('/{{#' . $k . '}}(.*?){{\/' . $k . '}}/sum', function ($matches) use ($v, $that) {
 
-                        $content = '';
-
-                        foreach ($v as $item)
+                    $content = preg_replace_callback(
+                        '/{{#' . $k . '}}(.*?){{\/' . $k . '}}/sum',
+                        function ($matches) use ($v, $that)
                         {
-                            // this is why the method has to be public :)
-                            $content .= $that->renderContentVariables($matches[1], $item);
-                        }
+                            $content = '';
 
-                        return $content;
+                            foreach ($v as $item)
+                            {
+                                // this is why the method has to be public :)
+                                $content .= $that->renderContentVariables($matches[1], $item);
+                            }
 
-                    }, $content);
+                            return $content;
+
+                        },
+                        $content
+                    );
                 }
 
                 // handle string values

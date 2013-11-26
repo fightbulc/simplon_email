@@ -2,8 +2,6 @@
 
     namespace Simplon\Email\Vo;
 
-    use Simplon\Helper\Helper;
-
     class EmailTransportVo
     {
         /** @var \Swift_MailTransport|\Swift_SmtpTransport */
