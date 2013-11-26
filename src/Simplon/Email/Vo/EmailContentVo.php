@@ -155,13 +155,13 @@
         // ######################################
 
         /**
-         * @return array|null
+         * @return array
          */
         public function getEmbeddedImages()
         {
             if (empty($this->_embeddedImages))
             {
-                return NULL;
+                return [];
             }
 
             return $this->_embeddedImages;

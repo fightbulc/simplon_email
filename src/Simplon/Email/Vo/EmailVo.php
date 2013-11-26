@@ -279,7 +279,7 @@
         // ######################################
 
         /**
-         * @return array|null
+         * @return array
          */
         public function getEmbeddedImages()
         {
@@ -290,6 +290,6 @@
                 return $emailContentVo->getEmbeddedImages();
             }
 
-            return NULL;
+            return [];
         }
     }

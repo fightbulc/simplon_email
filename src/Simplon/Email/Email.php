@@ -5,7 +5,6 @@
     use Simplon\Email\Vo\EmailContentVo;
     use Simplon\Email\Vo\EmailTransportVo;
     use Simplon\Email\Vo\EmailVo;
-    use Simplon\Helper\Helper;
 
     class Email
     {
