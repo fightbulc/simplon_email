@@ -19,6 +19,9 @@
         protected $_contentVariables = [];
 
         /** @var Array */
+        protected $_localeStrings = [];
+
+        /** @var Array */
         protected $_embeddedImages = [];
 
         // ######################################
@@ -83,18 +86,43 @@
 
         /**
          * @param $content
+         *
+         * @return mixed
+         */
+        protected function _translateLocaleStrings($content)
+        {
+            $locale = $this->_getLocaleStrings();
+
+            return preg_replace_callback('/\'\'\'(.+?)\'\'\'/sum', function ($matches) use ($locale) {
+                $key = $matches[1];
+
+                if (isset($locale[$key]))
+                {
+                    return $locale[$key];
+                }
+
+                return $key;
+            }, $content);
+        }
+
+        // ######################################
+
+        /**
+         * @param $content
          * @param array $vars
          *
          * @return mixed
          */
         public function renderContentVariables($content, array $vars)
         {
+            $content = $this->_translateLocaleStrings($content);
+
             foreach ($vars as $k => $v)
             {
                 // handle loops over arrays
                 if (is_array($v)){
                     $that = $this;
-                    $content = preg_replace_callback('/{{#' . $k . '}}(.*?){{\/' . $k . '}}/mu', function ($matches) use ($v, $that) {
+                    $content = preg_replace_callback('/{{#' . $k . '}}(.*?){{\/' . $k . '}}/sum', function ($matches) use ($v, $that) {
 
                         $content = '';
 
@@ -285,6 +313,47 @@
         protected function _getContentVariables()
         {
             return $this->_contentVariables;
+        }
+
+        // ######################################
+
+        /**
+         * @param $localeStrings
+         *
+         * @return $this
+         */
+        public function setLocaleStrings($localeStrings)
+        {
+            $this->_localeStrings = $localeStrings;
+
+            return $this;
+        }
+
+        // ######################################
+
+        /**
+         * @return Array
+         */
+        protected function _getLocaleStrings()
+        {
+            return $this->_localeStrings;
+        }
+
+        // ######################################
+
+        /**
+         * @param string $string
+         *
+         * @return string
+         */
+        public function getTranslation($string)
+        {
+            if (isset($this->_localeStrings[$string]))
+            {
+                return $this->_localeStrings[$string];
+            }
+
+            return $string;
         }
 
         // ######################################
