@@ -223,7 +223,7 @@ Still in doubt how to use this library? Have a look at the ```test``` folder.
 # License
 Simplon\Email is freely distributable under the terms of the MIT license.
 
-Copyright (c) 2013 Tino Ehrich ([opensource@efides.com](mailto:opensource@efides.com))
+Copyright (c) 2013 Tino Ehrich ([tino@bigpun.me](mailto:tino@bigpun.me))
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
