@@ -4,9 +4,10 @@
     "homepage": "https://github.com/fightbulc/simplon_email",
     "type": "library",
     "keywords": [
+        "transactional",
         "email",
-        "building",
-        "templates",
+        "template",
+        "send",
         "mailer"
     ],
     "license": "MIT",
@@ -21,6 +22,7 @@
     "require": {
         "php": ">=5.4",
         "swiftmailer/swiftmailer": "5.4.*",
+        "simplon/mustache": "0.1.*",
         "simplon/helper": "0.8.*"
     },
     "autoload": {

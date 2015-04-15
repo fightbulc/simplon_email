@@ -12,7 +12,7 @@ class EmailTransportVo
     /**
      * @var \Swift_MailTransport|\Swift_SmtpTransport
      */
-    protected $transportInstance;
+    private $transportInstance;
 
     /**
      * @param \Swift_MailTransport|\Swift_SmtpTransport $mailtransportInstance

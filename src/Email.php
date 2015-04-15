@@ -2,7 +2,6 @@
 
 namespace Simplon\Email;
 
-use Simplon\Email\Vo\EmailContentVo;
 use Simplon\Email\Vo\EmailTransportVo;
 use Simplon\Email\Vo\EmailVo;
 
@@ -16,12 +15,7 @@ class Email
     /**
      * @var EmailTransportVo
      */
-    protected $emailTransportVo;
-
-    /**
-     * @var EmailContentVo
-     */
-    protected $emailContentVo;
+    private $emailTransportVo;
 
     /**
      * @param EmailTransportVo $emailTransportVo
@@ -123,7 +117,7 @@ class Email
             ->send($messageInstance, $failedRecipients);
 
         // handle response
-        if (!empty($failedRecipients))
+        if (empty($failedRecipients) === false)
         {
             return $failedRecipients;
         }

@@ -20,7 +20,7 @@ Since its a composer package all you need to to do is require it within your com
 ```json
 {
      "require": {
-        "simplon/email": "0.1.*"
+        "simplon/email": "*"
      }
 }
 ```
@@ -58,14 +58,14 @@ All what is needed is to tell the class where to find our templates for this par
 - need to be named "base.plain" \ "base.html"
 
 Example:
+
 ```plain
 HEADER
 
 #################################################
 
-A base-template is the basis to all
-content-templates. Content will replace the
-following placeholder:
+A base-template is the basis to all content-templates.
+Content will replace the following placeholder:
 
 {{content}}
 
@@ -89,7 +89,7 @@ Today is {{date}}
 Oh herro!
 
 This is a content template which can receive
-content variables such as the recipients name.
+content data such as the recipients name.
 
 Be nice, {{name}}!
 
@@ -103,7 +103,8 @@ Note: We enforce these names just to make it as easy and as quick as possible to
 
 Here is a snapshot from our test template folders which hold all data:
 
-**Folder structure***
+**Folder structure**
+
 ```bash
 |-templates
 |---base
@@ -114,6 +115,7 @@ Here is a snapshot from our test template folders which hold all data:
 ```
 
 **Base templates**
+
 ```bash
 drwxr-xr-x  4 fightbulc  staff  136  7 Jul 15:52 .
 drwxr-xr-x  5 fightbulc  staff  170  7 Jul 15:52 ..
@@ -122,6 +124,7 @@ drwxr-xr-x  5 fightbulc  staff  170  7 Jul 15:52 ..
 ```
 
 **Content templates** (example multipart email)
+
 ```bash
 drwxr-xr-x  5 fightbulc  staff     170  7 Jul 15:52 .
 drwxr-xr-x  6 fightbulc  staff     204  7 Jul 15:52 ..
@@ -130,35 +133,26 @@ drwxr-xr-x  6 fightbulc  staff     204  7 Jul 15:52 ..
 -rw-r--r--  1 fightbulc  staff     166 30 Jun 15:54 content.plain
 ```
 
-#### Set content
+#### Create email
 
-Cool, lets set some data which will be injected in to our base/content templates and tell our class where to look for the templates.
+Alright, lets create our first email. Below we will set all relevant data. Just follow the example:
 
 ```php
-// set content variables
-$contentVariables = [
+// set content data
+$contentData = [
     'name' => 'Tino',
     'age'  => 32,
     'date' => date('r'),
 ];
 
-// set email content
-$emailContentVo = (new \Simplon\Email\Vo\EmailContentVo())
-    ->setPathBaseTemplates(__DIR__ . '/templates/base')     /* only wanna use a content file? leave this setter out */
-    ->setPathContentTemplates(__DIR__ . '/templates/content/tmpl01')
-    ->setContentVariables($contentVariables);
-```
-
-#### Set sender/recipient data
-
-Now lets set our sender/recipient data and add our defined contents:
-
 ```php
 $emailVo = (new \Simplon\Email\Vo\EmailVo())
+    ->setPathBaseTemplates(__DIR__ . '/templates/base') // optional
+    ->setPathContentTemplates(__DIR__ . '/templates/content/tmpl01')
     ->setFrom($config['fromAddress'], $config['fromName'])
     ->setTo($config['toAddress'], $config['toName'])
     ->setSubject('Herro!')
-    ->setEmailContentVo($emailContentVo);
+    ->setContentData($contentData)
 ```
 
 #### Send email
@@ -181,27 +175,21 @@ require __DIR__ . '/config.php';
 
 // ##########################################
 
-// set content variables
-$contentVariables = [
+// set content data
+$contentData = [
     'name' => 'Tino',
     'age'  => 32,
     'date' => date('r'),
 ];
 
-// set email content
-$emailContentVo = (new \Simplon\Email\Vo\EmailContentVo())
-    ->setPathBaseTemplates(__DIR__ . '/templates/base')
-    ->setPathContentTemplates(__DIR__ . '/templates/content/tmpl01')
-    ->setContentVariables($contentVariables);
-
-// ------------------------------------------
-
 // set email
 $emailVo = (new \Simplon\Email\Vo\EmailVo())
+    ->setPathBaseTemplates(__DIR__ . '/templates/base')
+    ->setPathContentTemplates(__DIR__ . '/templates/content/tmpl01')
     ->setFrom($config['fromAddress'], $config['fromName'])
     ->setTo($config['toAddress'], $config['toName'])
     ->setSubject('Herro!')
-    ->setEmailContentVo($emailContentVo);
+    ->setContentData($contentData);
 
 // ------------------------------------------
 
@@ -223,7 +211,7 @@ Still in doubt how to use this library? Have a look at the ```test``` folder.
 # License
 Simplon\Email is freely distributable under the terms of the MIT license.
 
-Copyright (c) 2013 Tino Ehrich ([tino@bigpun.me](mailto:tino@bigpun.me))
+Copyright (c) 2015 Tino Ehrich ([tino@bigpun.me](mailto:tino@bigpun.me))
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

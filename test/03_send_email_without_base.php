@@ -1,42 +1,36 @@
 <?php
 
-    require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
-    // load test data
-    require __DIR__ . '/config.php';
+// load test data
+require __DIR__ . '/config.php';
 
-    // ##########################################
+// ##########################################
 
-    // set content variables
-    $contentVariables = [
-        'name' => 'Tino',
-        'age'  => 32,
-        'date' => date('r'),
-    ];
+// set content data
+$contentData = [
+    'name' => 'Tino',
+    'age'  => 32,
+    'date' => date('r'),
+];
 
-    // set email content
-    $emailContentVo = (new \Simplon\Email\Vo\EmailContentVo())
-        ->setPathContentTemplates(__DIR__ . '/templates/content/tmpl03')
-        ->setContentVariables($contentVariables);
+// set email
+$emailVo = (new \Simplon\Email\Vo\EmailVo())
+    ->setPathContentTemplates(__DIR__ . '/templates/content/tmpl03')
+    ->setFrom($config['fromAddress'], $config['fromName'])
+    ->setTo($config['toAddress'], $config['toName'])
+    ->setSubject('Herro!')
+    ->setContentData($contentData);
 
-    // ------------------------------------------
+// ------------------------------------------
 
-    // set email
-    $emailVo = (new \Simplon\Email\Vo\EmailVo())
-        ->setFrom($config['fromAddress'], $config['fromName'])
-        ->setTo($config['toAddress'], $config['toName'])
-        ->setSubject('Herro!')
-        ->setEmailContentVo($emailContentVo);
+// set transport
+$emailTransportVo = new \Simplon\Email\Vo\EmailTransportVo(Swift_MailTransport::newInstance());
 
-    // ------------------------------------------
+// ------------------------------------------
 
-    // set transport
-    $emailTransportVo = new \Simplon\Email\Vo\EmailTransportVo(Swift_MailTransport::newInstance());
+// send email
+$response = (new \Simplon\Email\Email($emailTransportVo))->sendEmail($emailVo);
 
-    // ------------------------------------------
-
-    // send email
-    $response = (new \Simplon\Email\Email($emailTransportVo))->sendEmail($emailVo);
-
-    // BOOL to indicate if all went fine
-    var_dump($response);
+// BOOL to indicate if all went fine
+var_dump($response);

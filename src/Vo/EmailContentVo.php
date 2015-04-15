@@ -3,6 +3,7 @@
 namespace Simplon\Email\Vo;
 
 use Simplon\Helper\Helper;
+use Simplon\Mustache\Mustache;
 
 /**
  * EmailContentVo
@@ -14,83 +15,32 @@ class EmailContentVo
     /**
      * @var string
      */
-    protected $fileNameBaseTemplate = 'base';
+    private $fileNameBaseTemplate = 'base';
 
     /**
      * @var string
      */
-    protected $fileNameContentTemplate = 'content';
+    private $fileNameContentTemplate = 'content';
 
     /**
      * @var string
      */
-    protected $pathBaseTemplates;
+    private $pathBaseTemplates;
 
     /**
      * @var string
      */
-    protected $pathContentTemplates;
+    private $pathContentTemplates;
 
     /**
      * @var array
      */
-    protected $contentVariables = [];
+    private $contentParams = [];
 
     /**
      * @var array
      */
-    protected $localeStrings = [];
-
-    /**
-     * @var array
-     */
-    protected $embeddedImages = [];
-
-    /**
-     * @param       $content
-     * @param array $vars
-     *
-     * @return mixed
-     */
-    public function renderContentVariables($content, array $vars)
-    {
-        $content = $this->translateLocaleStrings($content);
-
-        foreach ($vars as $k => $v)
-        {
-            // handle loops over arrays
-            if (is_array($v))
-            {
-                $that = $this;
-
-                $content = preg_replace_callback(
-                    '/{{#' . $k . '}}(.*?){{\/' . $k . '}}/sum',
-                    function ($matches) use ($v, $that)
-                    {
-                        $content = '';
-
-                        foreach ($v as $item)
-                        {
-                            // this is why the method has to be public :)
-                            $content .= $that->renderContentVariables($matches[1], $item);
-                        }
-
-                        return $content;
-
-                    },
-                    $content
-                );
-            }
-
-            // handle string values
-            else
-            {
-                $content = preg_replace('/\{\{' . $k . '\}\}/u', $v, $content);
-            }
-        }
-
-        return $content;
-    }
+    private $embeddedImages = [];
 
     /**
      * @return array
@@ -106,7 +56,7 @@ class EmailContentVo
     }
 
     /**
-     * @param mixed $pathTemplates
+     * @param string $pathTemplates
      *
      * @return EmailContentVo
      */
@@ -118,7 +68,7 @@ class EmailContentVo
     }
 
     /**
-     * @param mixed $pathTemplates
+     * @param string $pathTemplates
      *
      * @return EmailContentVo
      */
@@ -130,42 +80,39 @@ class EmailContentVo
     }
 
     /**
-     * @param mixed $contentVariables
+     * @return array
+     */
+    public function getContentParams()
+    {
+        return $this->contentParams;
+    }
+
+    /**
+     * @param array $contentParams
      *
      * @return EmailContentVo
      */
-    public function setContentVariables($contentVariables)
+    public function setContentParams(array $contentParams)
     {
-        $this->contentVariables = $contentVariables;
+        $this->contentParams = $contentParams;
 
         return $this;
     }
 
     /**
-     * @param $localeStrings
-     *
-     * @return $this
-     */
-    public function setLocaleStrings($localeStrings)
-    {
-        $this->localeStrings = $localeStrings;
-
-        return $this;
-    }
-
-    /**
-     * @param string $string
+     * @param string $template
+     * @param array  $params
      *
      * @return string
      */
-    public function getTranslation($string)
+    public function renderContentParams($template, array $params = [])
     {
-        if (isset($this->localeStrings[$string]))
+        if (empty($params) === true)
         {
-            return $this->localeStrings[$string];
+            $params = $this->getContentParams();
         }
 
-        return $string;
+        return Mustache::render($template, $params);
     }
 
     /**
@@ -177,21 +124,21 @@ class EmailContentVo
     }
 
     /**
-     * @return mixed|null
+     * @return string|null
      */
     public function getBodyPlain()
     {
         if ($this->hasContentPlain())
         {
             // content
-            $contentPlain = $this->renderContentVariables($this->getFileContentPlain(), $this->getContentVariables());
+            $contentPlain = $this->renderContentParams($this->getFileContentPlain());
 
             // base
             if ($this->hasBasePlain())
             {
-                $contentVariables = $this->getContentVariables();
-                $contentVariables['content'] = $contentPlain;
-                $contentPlain = $this->renderContentVariables($this->getFileBasePlain(), $contentVariables);
+                $contentParams = $this->getContentParams();
+                $contentParams['content'] = $contentPlain;
+                $contentPlain = $this->renderContentParams($this->getFileBasePlain(), $contentParams);
             }
 
             return $contentPlain;
@@ -209,21 +156,21 @@ class EmailContentVo
     }
 
     /**
-     * @return mixed|null
+     * @return string|null
      */
     public function getBodyHtml()
     {
         if ($this->hasContentHtml())
         {
             // content
-            $contentHtml = $this->renderContentVariables($this->getFileContentHtml(), $this->getContentVariables());
+            $contentHtml = $this->renderContentParams($this->getFileContentHtml());
 
             // base
             if ($this->hasBaseHtml())
             {
-                $contentVariables = $this->getContentVariables();
-                $contentVariables['content'] = $contentHtml;
-                $contentHtml = $this->renderContentVariables($this->getFileBaseHtml(), $contentVariables);
+                $contentParams = $this->getContentParams();
+                $contentParams['content'] = $contentHtml;
+                $contentHtml = $this->renderContentParams($this->getFileBaseHtml(), $contentParams);
             }
 
             // encode images
@@ -284,28 +231,6 @@ class EmailContentVo
     }
 
     /**
-     * @param $content
-     *
-     * @return mixed
-     */
-    protected function translateLocaleStrings($content)
-    {
-        $locale = $this->getLocaleStrings();
-
-        return preg_replace_callback('/\'\'\'(.+?)\'\'\'/sum', function ($matches) use ($locale)
-        {
-            $key = $matches[1];
-
-            if (isset($locale[$key]))
-            {
-                return $locale[$key];
-            }
-
-            return $key;
-        }, $content);
-    }
-
-    /**
      * @param $contentBody
      *
      * @return array|bool
@@ -347,9 +272,9 @@ class EmailContentVo
     }
 
     /**
-     * @param $contentBody
+     * @param string $contentBody
      *
-     * @return mixed
+     * @return string
      */
     protected function prepareContentImages($contentBody)
     {
@@ -390,22 +315,6 @@ class EmailContentVo
     protected function getPathContentTemplates()
     {
         return Helper::pathTrim($this->pathContentTemplates);
-    }
-
-    /**
-     * @return Array
-     */
-    protected function getContentVariables()
-    {
-        return $this->contentVariables;
-    }
-
-    /**
-     * @return Array
-     */
-    protected function getLocaleStrings()
-    {
-        return $this->localeStrings;
     }
 
     /**
