@@ -33,12 +33,16 @@ This class holds our chosen email transport instance in order to send emails.
 
 ```php
 // php's internal mail
-$emailTransportVo = (new \Simplon\Email\Vo\EmailTransportVo())
-   ->setTransportInstance(Swift_MailTransport::newInstance());
+$emailTransportVo = (new \Simplon\Email\Vo\EmailTransportVo())->setTransportInstance(
+	\Swift_MailTransport::newInstance()
+);
 
 // or via smtp transport
-$emailTransportVo = (new \Simplon\Email\Vo\EmailTransportVo())
-   ->setTransportInstance(Swift_SmtpTransport::newInstance('localhost', 25));
+$emailTransportVo = (new \Simplon\Email\Vo\EmailTransportVo())->setTransportInstance(
+	\Swift_SmtpTransport::newInstance('localhost', 25)
+		->setUsername('foo')
+		->setPassword('bar')
+);
 ```
 
 ### Email setup
@@ -194,7 +198,9 @@ $emailVo = (new \Simplon\Email\Vo\EmailVo())
 // ------------------------------------------
 
 // set transport
-$emailTransportVo = new \Simplon\Email\Vo\EmailTransportVo(Swift_MailTransport::newInstance());
+$emailTransportVo = new \Simplon\Email\Vo\EmailTransportVo(
+	\Swift_MailTransport::newInstance()
+);
 
 // ------------------------------------------
 

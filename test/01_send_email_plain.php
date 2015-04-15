@@ -26,7 +26,9 @@ $emailVo = (new \Simplon\Email\Vo\EmailVo())
 // ------------------------------------------
 
 // set transport
-$emailTransportVo = new \Simplon\Email\Vo\EmailTransportVo(Swift_MailTransport::newInstance());
+$emailTransportVo = new \Simplon\Email\Vo\EmailTransportVo(
+    Swift_MailTransport::newInstance()
+);
 
 // ------------------------------------------
 
