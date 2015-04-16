@@ -23,7 +23,7 @@
         "php": ">=5.4",
         "swiftmailer/swiftmailer": "5.4.*",
         "simplon/mustache": "0.1.*",
-        "simplon/helper": "0.8.*"
+        "simplon/helper": "0.10.*"
     },
     "autoload": {
         "psr-4": {

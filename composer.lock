@@ -4,8 +4,64 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "12466401f9cac88a56624e8876a0eb5f",
+    "hash": "72eb58c984ab1b7f5f43025da476f33b",
     "packages": [
+        {
+            "name": "danielstjules/stringy",
+            "version": "1.9.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/danielstjules/Stringy.git",
+                "reference": "3cf18e9e424a6dedc38b7eb7ef580edb0929461b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/danielstjules/Stringy/zipball/3cf18e9e424a6dedc38b7eb7ef580edb0929461b",
+                "reference": "3cf18e9e424a6dedc38b7eb7ef580edb0929461b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Stringy\\": "src/"
+                },
+                "files": [
+                    "src/Create.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Daniel St. Jules",
+                    "email": "danielst.jules@gmail.com",
+                    "homepage": "http://www.danielstjules.com"
+                }
+            ],
+            "description": "A string manipulation library with multibyte support",
+            "homepage": "https://github.com/danielstjules/Stringy",
+            "keywords": [
+                "UTF",
+                "helpers",
+                "manipulation",
+                "methods",
+                "multibyte",
+                "string",
+                "utf-8",
+                "utility",
+                "utils"
+            ],
+            "time": "2015-02-10 06:19:18"
+        },
         {
             "name": "doctrine/lexer",
             "version": "dev-master",
@@ -113,19 +169,20 @@
         },
         {
             "name": "simplon/helper",
-            "version": "0.8.5",
+            "version": "0.10.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fightbulc/simplon_helper.git",
-                "reference": "f83c50a5730a09155ea4b4acfba551a62160cfec"
+                "reference": "23fb09a1ac554392231194fbbc67b84263300daa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fightbulc/simplon_helper/zipball/f83c50a5730a09155ea4b4acfba551a62160cfec",
-                "reference": "f83c50a5730a09155ea4b4acfba551a62160cfec",
+                "url": "https://api.github.com/repos/fightbulc/simplon_helper/zipball/23fb09a1ac554392231194fbbc67b84263300daa",
+                "reference": "23fb09a1ac554392231194fbbc67b84263300daa",
                 "shasum": ""
             },
             "require": {
+                "danielstjules/stringy": "1.9.*",
                 "php": ">=5.4"
             },
             "type": "library",
@@ -145,14 +202,14 @@
                     "role": "developer"
                 }
             ],
-            "description": "Helpers for recurring tasks.",
+            "description": "Helpers for recurring requirements.",
             "homepage": "https://github.com/fightbulc/simplon_helper",
             "keywords": [
                 "helper",
                 "strings",
                 "value objects"
             ],
-            "time": "2015-03-09 17:54:44"
+            "time": "2015-04-16 06:53:29"
         },
         {
             "name": "simplon/mustache",
