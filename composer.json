@@ -1,33 +1,33 @@
 {
-    "name": "simplon/email",
-    "description": "Email building library which utilises swiftmailer",
-    "homepage": "https://github.com/fightbulc/simplon_email",
-    "type": "library",
-    "keywords": [
-        "transactional",
-        "email",
-        "template",
-        "send",
-        "mailer"
-    ],
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Tino Ehrich",
-            "email": "tino@bigpun.me",
-            "role": "developer"
-        }
-    ],
-    "minimum-stability": "dev",
-    "require": {
-        "php": ">=5.4",
-        "swiftmailer/swiftmailer": "5.4.*",
-        "simplon/mustache": "0.1.*",
-        "simplon/helper": "0.10.*"
-    },
-    "autoload": {
-        "psr-4": {
-            "Simplon\\Email\\": "src/"
-        }
+  "name": "simplon/email",
+  "description": "Email building library which utilises swiftmailer",
+  "homepage": "https://github.com/fightbulc/simplon_email",
+  "type": "library",
+  "keywords": [
+    "transactional",
+    "email",
+    "template",
+    "send",
+    "mailer"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Tino Ehrich",
+      "email": "tino@bigpun.me",
+      "role": "developer"
     }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.4",
+    "swiftmailer/swiftmailer": "5.4.*",
+    "simplon/mustache": "0.1.*",
+    "simplon/helper": "0.11.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Simplon\\Email\\": "src/"
+    }
+  }
 }

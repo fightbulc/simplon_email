@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "72eb58c984ab1b7f5f43025da476f33b",
+    "hash": "bb7a97ff5ace9416096b1547536d3ae8",
     "packages": [
         {
             "name": "danielstjules/stringy",
@@ -132,7 +132,7 @@
             },
             "require": {
                 "doctrine/lexer": "~1.0,>=1.0.1",
-                "php": ">= 5.3.3"
+                "php": ">= 5.5"
             },
             "require-dev": {
                 "phpunit/phpunit": "~4.4",
@@ -169,16 +169,16 @@
         },
         {
             "name": "simplon/helper",
-            "version": "0.10.1",
+            "version": "0.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fightbulc/simplon_helper.git",
-                "reference": "23fb09a1ac554392231194fbbc67b84263300daa"
+                "reference": "7921201862cedf56956718796f24d62b8cb96168"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fightbulc/simplon_helper/zipball/23fb09a1ac554392231194fbbc67b84263300daa",
-                "reference": "23fb09a1ac554392231194fbbc67b84263300daa",
+                "url": "https://api.github.com/repos/fightbulc/simplon_helper/zipball/7921201862cedf56956718796f24d62b8cb96168",
+                "reference": "7921201862cedf56956718796f24d62b8cb96168",
                 "shasum": ""
             },
             "require": {
@@ -209,7 +209,7 @@
                 "strings",
                 "value objects"
             ],
-            "time": "2015-04-16 06:53:29"
+            "time": "2015-09-01 07:06:05"
         },
         {
             "name": "simplon/mustache",
